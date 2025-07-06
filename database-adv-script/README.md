@@ -54,3 +54,32 @@ WHERE
             AVG(rating) > 4.0
     );
 ```
+---
+# Aggregations and Window Functions
+
+## Objective
+
+This script demonstrates how to analyze Airbnb booking data using SQL aggregation functions and window functions. It includes:
+
+- Counting total bookings per user.
+- Ranking properties by the number of bookings they have received.
+
+## File
+
+- **aggregations_and_window_functions.sql**: Contains the SQL queries for aggregation and ranking.
+
+## SQL Concepts Used
+
+### 1. Aggregation with `GROUP BY` and `COUNT`
+
+We calculate how many bookings each user has made by grouping data based on `user_id`.
+
+```sql
+SELECT
+    user_id,
+    COUNT(*) AS total_bookings
+FROM
+    bookings
+GROUP BY
+    user_id;
+```
