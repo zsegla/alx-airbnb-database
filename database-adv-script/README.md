@@ -26,3 +26,31 @@ SELECT
 FROM
     bookings b
 INNER JOIN users u ON b.user_id = u.id;
+```
+---
+# Airbnb Database – Subqueries
+
+This file contains examples of both non-correlated and correlated subqueries used to analyze Airbnb data.
+
+## 1. Non-Correlated Subquery – Properties with Avg Rating > 4.0
+
+The following query retrieves all properties where the average review rating is greater than 4.0.
+
+```sql
+SELECT
+    id,
+    name
+FROM
+    properties
+WHERE
+    id IN (
+        SELECT
+            property_id
+        FROM
+            reviews
+        GROUP BY
+            property_id
+        HAVING
+            AVG(rating) > 4.0
+    );
+```
