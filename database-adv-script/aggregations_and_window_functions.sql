@@ -7,7 +7,7 @@ FROM
 GROUP BY
     user_id;
 
--- Rank properties based on total number of bookings
+-- Rank properties based on total number of bookings using window functions
 WITH property_bookings AS (
     SELECT
         property_id,
@@ -20,6 +20,10 @@ WITH property_bookings AS (
 SELECT
     property_id,
     booking_count,
-    RANK() OVER (ORDER BY booking_count DESC) AS property_rank
+    RANK() OVER (ORDER BY booking_count DESC) AS property_rank,
+    ROW_NUMBER() OVER (ORDER BY booking_count DESC) AS property_row_num,
+    DENSE_RANK() OVER (ORDER BY booking_count DESC) AS property_dense_rank
 FROM
-    property_bookings;
+    property_bookings
+ORDER BY
+    property_rank;
