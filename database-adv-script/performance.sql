@@ -22,10 +22,14 @@ JOIN
     properties p ON b.property_id = p.id
 JOIN 
     payments pay ON b.id = pay.booking_id
-WHERE 
-    b.status = 'confirmed'
 ORDER BY 
-    b.check_in_date DESC;
+    b.created_at DESC;
+
+-- Performance analysis findings:
+-- 1. Missing indexes on join columns (user_id, property_id, booking_id)
+-- 2. Full table scan on payments table
+-- 3. No filters causing excessive data retrieval
+-- 4. Sorting on unindexed created_at column
 
 -- Optimized query (after refactoring)
 EXPLAIN ANALYZE
@@ -41,8 +45,7 @@ SELECT
     pay.payment_method,
     pay.status AS payment_status,
     b.check_in_date,
-    b.check_out_date,
-    b.status AS booking_status
+    b.check_out_date
 FROM 
     bookings b
 INNER JOIN 
@@ -52,8 +55,8 @@ INNER JOIN
 LEFT JOIN 
     payments pay ON b.id = pay.booking_id
 WHERE 
-    b.status = 'confirmed'
-    AND b.check_in_date >= CURRENT_DATE - INTERVAL '6 months'
+    b.check_in_date BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '6 months'
+    AND b.status = 'confirmed'
 ORDER BY 
     b.check_in_date DESC
-LIMIT 1000;
+LIMIT 500;
